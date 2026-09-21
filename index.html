@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>علولا عمك — معركة الدبابات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* ===================== التوكنز والثيم ===================== */
+:root{
+  --bg:#0a0e18;
+  --bg2:#111829;
+  --panel:#151d32;
+  --panel2:#1c2742;
+  --line:#2a3552;
+  --txt:#e8eefc;
+  --muted:#8b9ac0;
+  --blue:#3d8bff;
+  --blue-soft:#7fb4ff;
+  --red:#ff4d5e;
+  --red-soft:#ff8c98;
+  --gold:#ffc63d;
+  --green:#3ddc84;
+  --violet:#a06bff;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{height:100%;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, #1b2744 0%, transparent 60%),
+    var(--bg);
+  color:var(--txt);
+  font-family:"Cairo","Segoe UI",Tahoma,sans-serif;
+  overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+
+/* ===================== الهيكل العام ===================== */
+#app{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow-y:auto;
+}
+.screen.active{display:flex;}
+
+/* ===================== الأزرار ===================== */
+.btn{
+  font-family:inherit;
+  font-weight:700;
+  font-size:1.05rem;
+  color:var(--txt);
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px 30px;
+  min-width:230px;
+  cursor:pointer;
+  transition:transform .12s ease, border-color .2s, box-shadow .2s;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+.btn:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 10px 26px rgba(61,139,255,.25);}
+.btn:active{transform:translateY(0);}
+.btn.primary{
+  background:linear-gradient(180deg,#ffd15c,var(--gold));
+  color:#2a1e00;border-color:#ffdf94;
+  box-shadow:0 8px 24px rgba(255,198,61,.3);
+}
+.btn.primary:hover{border-color:#fff;box-shadow:0 12px 30px rgba(255,198,61,.45);}
+.btn.ghost{min-width:auto;padding:10px 22px;font-size:.95rem;background:transparent;}
+.btn.small{min-width:auto;padding:10px 20px;font-size:.9rem;}
+
+/* ===================== القائمة الرئيسية ===================== */
+.logo-wrap{text-align:center;margin-bottom:34px;}
+.logo{
+  font-size:clamp(2.8rem,10vw,5.2rem);
+  font-weight:900;
+  line-height:1.05;
+  margin:0;
+  background:linear-gradient(180deg,#fff 10%,var(--gold) 60%,#c98f00 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 20px rgba(255,198,61,.35));
+}
+.logo-sub{
+  margin-top:10px;color:var(--muted);font-size:clamp(.85rem,3vw,1.05rem);letter-spacing:.5px;
+}
+.tag-versus{
+  display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;
+  font-weight:700;font-size:.95rem;
+}
+.tag-versus .p{padding:6px 16px;border-radius:999px;border:1px solid var(--line);}
+.tag-versus .p.blue{color:var(--blue-soft);border-color:rgba(61,139,255,.5);background:rgba(61,139,255,.08);}
+.tag-versus .p.red{color:var(--red-soft);border-color:rgba(255,77,94,.5);background:rgba(255,77,94,.08);}
+.menu-btns{display:flex;flex-direction:column;gap:14px;align-items:center;}
+.score-strip{
+  margin-top:26px;display:flex;gap:26px;align-items:center;
+  background:rgba(255,255,255,.03);border:1px solid var(--line);
+  padding:10px 22px;border-radius:14px;font-size:.9rem;color:var(--muted);
+}
+.score-strip b{font-size:1.3rem;display:block;text-align:center;}
+.score-strip .sb b{color:var(--blue-soft);}
+.score-strip .sr b{color:var(--red-soft);}
+
+/* ===================== ألواح عامة ===================== */
+.panel{
+  width:min(760px,100%);
+  background:linear-gradient(180deg,rgba(28,39,66,.9),rgba(21,29,50,.9));
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:26px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+.panel h2{margin:0 0 6px;font-size:1.6rem;}
+.panel .desc{margin:0 0 22px;color:var(--muted);font-size:.92rem;}
+.back-row{margin-top:24px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+
+/* ===================== الخرائط ===================== */
+.maps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;}
+.map-card{
+  background:var(--panel);border:2px solid var(--line);border-radius:16px;
+  padding:14px;cursor:pointer;transition:.18s;text-align:center;
+}
+.map-card:hover{transform:translateY(-3px);border-color:var(--blue);}
+.map-card.selected{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,198,61,.15);}
+.map-card canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0c1220;}
+.map-card h3{margin:12px 0 4px;font-size:1.05rem;}
+.map-card p{margin:0;font-size:.8rem;color:var(--muted);line-height:1.5;}
+
+/* ===================== الإعدادات ===================== */
+.set-row{
+  display:grid;grid-template-columns:minmax(180px,1fr) auto;align-items:center;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--line);
+}
+@media(max-width:620px){.set-row{grid-template-columns:1fr;gap:10px}.set-row>.seg,.set-row>.btn{width:100%}.seg{width:100%}.seg button{flex:1;padding:10px 8px}}
+.set-row:last-of-type{border-bottom:none;}
+.set-label{font-weight:700;}
+.set-label span{display:block;font-weight:400;font-size:.8rem;color:var(--muted);margin-top:3px;}
+.seg{display:flex;background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.seg button{
+  font-family:inherit;font-size:.9rem;font-weight:700;color:var(--muted);
+  background:transparent;border:none;padding:10px 18px;cursor:pointer;transition:.15s;
+}
+.seg button.on{background:var(--blue);color:#fff;}
+.keys-help{
+  margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.keys-card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.keys-card h4{margin:0 0 10px;font-size:1rem;}
+.keys-card.blue h4{color:var(--blue-soft);}
+.keys-card.red h4{color:var(--red-soft);}
+.keys-card div{font-size:.85rem;color:var(--muted);margin:6px 0;}
+kbd{
+  display:inline-block;background:var(--panel2);border:1px solid var(--line);
+  border-bottom-width:3px;border-radius:6px;padding:2px 8px;font-family:inherit;
+  font-size:.8rem;color:var(--txt);margin:0 2px;
+}
+
+/* ===================== مولّد القدرات الاحترافي ===================== */
+.ability-stage{display:flex;flex-direction:column;align-items:center;gap:15px;width:100%;}
+.ability-stage .desc{max-width:620px}
+.ability-machine{
+  position:relative;width:min(590px,100%);min-height:235px;border:1px solid rgba(105,170,255,.25);
+  border-radius:24px;background:
+    radial-gradient(circle at 50% 48%,rgba(78,145,255,.20),transparent 27%),
+    linear-gradient(145deg,#17243f,#0a101d 70%);
+  overflow:hidden;box-shadow:inset 0 0 45px rgba(50,110,220,.10),0 18px 45px rgba(0,0,0,.35);
+}
+.ability-machine:before,.ability-machine:after{content:"";position:absolute;inset:12px;border:1px solid rgba(255,255,255,.06);border-radius:18px;pointer-events:none}
+.ability-machine:after{inset:24px;border-color:rgba(255,198,61,.08)}
+.ability-core{
+  position:absolute;left:50%;top:50%;width:105px;height:105px;transform:translate(-50%,-50%);
+  border-radius:50%;display:grid;place-items:center;font-size:2.7rem;
+  background:radial-gradient(circle,#fff8c7 0 5%,#ffc63d 13%,#8d5bff 42%,#172b62 68%,transparent 70%);
+  box-shadow:0 0 24px #ffc63d,0 0 70px rgba(103,94,255,.55);
+  animation:corePulse 1.4s ease-in-out infinite;
+  z-index:3;
+}
+.ability-ring{position:absolute;left:50%;top:50%;width:170px;height:170px;border:1px dashed rgba(255,198,61,.42);border-radius:50%;transform:translate(-50%,-50%);animation:spinRing 4s linear infinite}
+.ability-ring.r2{width:215px;height:215px;border-color:rgba(91,170,255,.25);animation-direction:reverse;animation-duration:6s}
+.ability-orbit{position:absolute;inset:0;z-index:2}
+.ability-orbit span{position:absolute;padding:7px 10px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(7,12,24,.72);font-size:.75rem;font-weight:900;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.ability-orbit span:nth-child(1){left:9%;top:20%}.ability-orbit span:nth-child(2){right:9%;top:20%}
+.ability-orbit span:nth-child(3){left:6%;bottom:18%}.ability-orbit span:nth-child(4){right:6%;bottom:18%}
+.ability-machine.rolling .ability-core{animation:coreRoll .18s linear infinite}
+.ability-machine.rolling .ability-ring{animation-duration:.55s}
+.ability-machine.done .ability-core{animation:coreWin .7s ease-out 1}
+@keyframes corePulse{50%{transform:translate(-50%,-50%) scale(1.08);filter:brightness(1.18)}}
+@keyframes coreRoll{to{transform:translate(-50%,-50%) rotate(360deg) scale(.92)}}
+@keyframes coreWin{0%{transform:translate(-50%,-50%) scale(.65)}70%{transform:translate(-50%,-50%) scale(1.22)}100%{transform:translate(-50%,-50%) scale(1)}}
+@keyframes spinRing{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.ability-deck{display:grid;grid-template-columns:repeat(7,minmax(48px,1fr));gap:7px;width:min(590px,100%);margin-top:-5px}
+.ability-card{
+  position:relative;min-height:88px;border:1px solid rgba(255,255,255,.10);border-radius:13px;
+  background:linear-gradient(155deg,#1c2c4b,#0d1525);overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;box-shadow:0 7px 18px rgba(0,0,0,.25);
+  transform:translateY(0) scale(1);transition:.25s;
+}
+.ability-card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.10),transparent);transform:translateX(-110%);transition:.5s}
+.ability-card.revealed:before{transform:translateX(110%)}
+.ability-card .card-icon{font-size:1.55rem;filter:drop-shadow(0 4px 7px rgba(0,0,0,.55));z-index:1}
+.ability-card .card-name{font-size:.64rem;font-weight:900;text-align:center;z-index:1}
+.ability-card .card-lock{font-size:.55rem;color:var(--muted);z-index:1}
+.ability-card.hidden .card-icon{font-size:1.2rem;color:#8ca3ca}
+.ability-card.hidden .card-name{color:var(--muted)}
+.ability-card.shuffle{animation:cardShuffle .16s ease-in-out infinite alternate}
+.ability-card.revealed{box-shadow:0 0 24px rgba(255,198,61,.18);transform:translateY(-4px) scale(1.04)}
+@keyframes cardShuffle{from{transform:translateY(-3px) rotate(-2deg);filter:brightness(1.25)}to{transform:translateY(3px) rotate(2deg);filter:brightness(.8)}}
+.ability-reveal{width:min(590px,100%);display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.picked{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:17px;padding:14px;text-align:center;min-height:106px;display:flex;flex-direction:column;justify-content:center;gap:4px;overflow:hidden;transition:.3s}
+.picked:after{content:"";position:absolute;left:-20%;right:-20%;bottom:-45%;height:90%;background:radial-gradient(circle,rgba(255,198,61,.12),transparent 65%);pointer-events:none}
+.picked.blue{border-color:rgba(61,139,255,.55)} .picked.red{border-color:rgba(255,77,94,.55)}
+.picked .who{font-size:.75rem;color:var(--muted);z-index:1}.picked .ab{font-size:1.05rem;font-weight:900;z-index:1}
+.picked .ab small{display:block;font-weight:400;font-size:.73rem;color:var(--muted);margin-top:4px}
+.picked.ready{box-shadow:0 0 30px rgba(255,198,61,.16);transform:translateY(-3px)}
+.ability-status{min-height:25px;color:var(--muted);font-size:.82rem;text-align:center}
+@media(max-width:620px){
+ .ability-machine{min-height:205px}.ability-core{width:82px;height:82px;font-size:2.1rem}.ability-ring{width:135px;height:135px}.ability-ring.r2{width:170px;height:170px}
+ .ability-orbit span{font-size:.62rem;padding:5px 7px}.ability-deck{grid-template-columns:repeat(7,1fr);gap:4px}.ability-card{min-height:72px;border-radius:10px}.ability-card .card-icon{font-size:1.15rem}.ability-card .card-name{font-size:.5rem}.ability-card .card-lock{display:none}
+}
+
+/* ===================== ساحة المعركة ===================== */
+#gameScreen{padding:0;justify-content:flex-start;}
+.arena-wrap{
+  position:relative;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;
+}
+.hud{
+  width:min(960px,100%);display:flex;align-items:center;gap:12px;
+}
+.hud-side{flex:1;min-width:0;}
+.hud-side .name{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:.82rem;font-weight:700;margin-bottom:5px;
+}
+.hud-side.blue .name{color:var(--blue-soft);}
+.hud-side.red .name{color:var(--red-soft);}
+.hud-side .name .abtxt{font-weight:400;font-size:.75rem;color:var(--muted);}
+.bar{height:16px;background:#0b1120;border:1px solid var(--line);border-radius:999px;overflow:hidden;position:relative;}
+.bar .fill{height:100%;width:100%;transition:width .18s ease;border-radius:999px;}
+.hud-side.blue .fill{background:linear-gradient(90deg,#2f6fd6,var(--blue));}
+.hud-side.red .fill{background:linear-gradient(90deg,#d63a4a,var(--red));}
+.bar .hp-text{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);
+}
+.hud-center{
+  text-align:center;flex:0 0 auto;padding:0 8px;
+}
+.hud-center .timer{font-size:1.45rem;font-weight:900;line-height:1;}
+.hud-center .timer.low{color:var(--red);}
+.hud-center .sc{font-size:.75rem;color:var(--muted);margin-top:3px;white-space:nowrap;}
+.hud-center .sc b.b{color:var(--blue-soft);}
+.hud-center .sc b.r{color:var(--red-soft);}
+
+#game{
+  display:block;background:#0c1220;border:1px solid var(--line);
+  border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);
+  max-width:100%;max-height:100%;
+}
+.esc-hint{font-size:.72rem;color:var(--muted);}
+
+/* ===================== شاشة النتيجة ===================== */
+.overlay{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(6,10,20,.82);backdrop-filter:blur(6px);z-index:20;padding:20px;
+}
+.overlay.active{display:flex;}
+.result-card{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:22px;padding:32px;text-align:center;
+  width:min(460px,100%);box-shadow:0 24px 70px rgba(0,0,0,.6);
+}
+.result-card .crown{font-size:3rem;line-height:1;}
+.result-card h2{margin:12px 0 4px;font-size:2rem;}
+.result-card h2.blue{color:var(--blue-soft);}
+.result-card h2.red{color:var(--red-soft);}
+.result-card .sub{color:var(--muted);font-size:.9rem;margin-bottom:6px;}
+.result-card .tally{
+  margin:16px 0 22px;display:flex;justify-content:center;gap:18px;align-items:center;
+  font-size:1.6rem;font-weight:900;
+}
+.result-card .tally .b{color:var(--blue-soft);}
+.result-card .tally .r{color:var(--red-soft);}
+.result-card .tally .x{color:var(--muted);font-size:1rem;}
+.result-actions{display:flex;flex-direction:column;gap:10px;}
+
+/* ===================== تحكم اللمس / الأزرار القابلة للتحريك ===================== */
+.control-edit-bar{display:none;position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:30;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(255,198,61,.35);border-radius:13px;background:rgba(8,13,25,.92);box-shadow:0 10px 25px rgba(0,0,0,.35);font-size:.75rem}
+.control-edit-bar span{color:var(--muted)}
+#gameScreen.control-editing .control-edit-bar{display:flex}
+@media(max-width:620px){.control-edit-bar{width:calc(100% - 20px);justify-content:center;flex-wrap:wrap}.control-edit-bar span{display:none}}
+#touchUI{display:none;position:absolute;inset:0;z-index:15;pointer-events:none;}
+#touchUI.on{display:block;}
+.touch-control{position:absolute;pointer-events:auto;touch-action:none;user-select:none;}
+.touch-joystick{width:132px;height:132px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,rgba(75,105,155,.45),rgba(12,20,38,.78));border:2px solid rgba(255,255,255,.2);box-shadow:0 12px 28px rgba(0,0,0,.35),inset 0 0 20px rgba(255,255,255,.05);touch-action:none;}
+.touch-joystick.blue{border-color:rgba(102,167,255,.55)}
+.touch-joystick.red{border-color:rgba(255,118,132,.55)}
+.joy-stick{width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#334b72,#172640);border:2px solid rgba(255,255,255,.28);box-shadow:0 7px 14px rgba(0,0,0,.4);transform:translate(0,0);transition:transform .04s linear,background .12s;}
+.touch-joystick.active .joy-stick{background:linear-gradient(145deg,#4d6d9f,#213657);}
+.touch-fire{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,rgba(255,198,61,.55),rgba(102,61,0,.72));border:2px solid var(--gold);box-shadow:0 10px 25px rgba(0,0,0,.38),0 0 18px rgba(255,198,61,.12);font-weight:1000;font-size:.78rem;color:#ffe8a4;touch-action:none;}
+.touch-fire.blue{border-color:#66a7ff;box-shadow:0 10px 25px rgba(0,0,0,.38),0 0 18px rgba(102,167,255,.16)}
+.touch-fire.red{border-color:#ff7684;box-shadow:0 10px 25px rgba(0,0,0,.38),0 0 18px rgba(255,118,132,.16)}
+.touch-fire.act{transform:scale(.93);filter:brightness(1.25);}
+#touchUI.edit-mode .touch-control{outline:2px dashed var(--gold);outline-offset:6px;pointer-events:none;}
+#touchUI.edit-mode .touch-control::after{content:"✥ اسحب";position:absolute;top:-25px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:.7rem;font-weight:900;white-space:nowrap;}
+.control-editor{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--bg2);display:none;}
+.control-editor.active{display:block;}
+.control-editor h3{margin:0 0 8px;font-size:1rem;}
+.control-editor p{margin:0 0 12px;color:var(--muted);font-size:.78rem;}
+.key-bind-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.key-bind{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:.8rem;}
+.key-bind button{min-width:90px;padding:7px 9px;border-radius:8px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);font:inherit;cursor:pointer;}
+.key-bind button.listening{border-color:var(--gold);color:var(--gold);}
+@media (max-width:640px){
+  .keys-help{grid-template-columns:1fr;}
+  .panel{padding:18px;}
+  .btn{min-width:200px;}
+}
+
+
+/* ===== الإعدادات الاحترافية ===== */
+.settings-section{margin:16px 0;padding:4px 0;border-top:1px solid rgba(255,255,255,.055);}
+.settings-section-title{font-weight:900;font-size:.86rem;color:#ffd66b;padding:14px 4px 7px;letter-spacing:.2px}
+.range-wrap{display:flex;align-items:center;gap:10px;min-width:230px}
+.range-wrap input{width:170px;accent-color:var(--gold)}
+.range-wrap b{min-width:42px;text-align:center;color:var(--gold)}
+.danger-zone{border-top-color:rgba(255,77,94,.16)}
+/* ===== محرر التحكم ===== */
+.control-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,6,14,.78);backdrop-filter:blur(8px)}
+.control-modal.open{display:flex}
+.control-modal-card{width:min(920px,100%);max-height:min(92vh,820px);overflow:auto;background:linear-gradient(180deg,#111a2c,#0b1220);border:1px solid rgba(255,198,61,.25);border-radius:22px;box-shadow:0 25px 80px rgba(0,0,0,.55);padding:20px}
+.control-modal-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+.control-modal-head h2{margin:0 0 5px;font-size:1.25rem}
+.control-modal-head p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.7}
+.icon-btn{border:1px solid var(--line);background:var(--panel);color:var(--txt);width:38px;height:38px;border-radius:11px;cursor:pointer;font-size:1rem}
+.control-tabs{display:flex;gap:8px;margin:18px 0 12px;padding:5px;background:rgba(255,255,255,.035);border-radius:13px}
+.control-tab{flex:1;border:0;border-radius:9px;padding:10px;background:transparent;color:var(--muted);font:inherit;font-weight:800;cursor:pointer}
+.control-tab.active{background:var(--panel2);color:var(--gold);box-shadow:0 4px 15px rgba(0,0,0,.18)}
+.control-pane{display:none}.control-pane.active{display:block}
+.key-bind-grid.professional{grid-template-columns:1fr 1fr}
+.key-bind-grid.professional .key-bind{min-height:48px}
+.key-bind button.listening{animation:keyPulse .8s infinite alternate}
+@keyframes keyPulse{from{box-shadow:0 0 0 rgba(255,198,61,0)}to{box-shadow:0 0 18px rgba(255,198,61,.28)}}
+.key-status{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.16);color:var(--muted);font-size:.75rem;text-align:center}
+.touch-editor-stage{position:relative;width:100%;height:min(55vh,430px);min-height:280px;overflow:hidden;border-radius:18px;border:1px solid var(--line);background:#08101e}
+.stage-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:28px 28px}
+.stage-label{position:absolute;top:12px;font-weight:900;font-size:.75rem;padding:7px 10px;border-radius:9px;background:rgba(0,0,0,.35)}
+.stage-label.blue{left:12px;color:#66a7ff}.stage-label.red{right:12px;color:#ff7684}
+.editor-control{position:absolute;cursor:grab;touch-action:none;user-select:none;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.editor-control:active{cursor:grabbing}
+.editor-joy{width:108px;height:108px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;background:rgba(12,19,34,.9);border:2px dashed rgba(255,198,61,.5);color:var(--txt);font-size:.65rem}
+.editor-joy.blue{border-color:rgba(102,167,255,.65)} .editor-joy.red{border-color:rgba(255,118,132,.65)}
+.mini-joy{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(55,78,117,.5);border:1px solid rgba(255,255,255,.18)}
+.mini-joy span{width:24px;height:24px;border-radius:50%;background:#30476c;border:2px solid rgba(255,255,255,.25)}
+.editor-fire{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,198,61,.16);border:2px dashed var(--gold);color:var(--gold);font-size:.65rem;font-weight:900;text-align:center}
+.editor-fire.blue{border-color:#66a7ff;color:#9bc5ff}.editor-fire.red{border-color:#ff7684;color:#ff9da8}
+.touch-editor-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:var(--muted);font-size:.72rem}
+.control-modal-foot{display:flex;justify-content:space-between;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+@media(max-width:640px){
+  .key-bind-grid.professional{grid-template-columns:1fr}
+  .control-modal{padding:8px}.control-modal-card{padding:14px;border-radius:17px}
+  .touch-editor-stage{height:360px}.editor-joy{width:94px;height:94px}.editor-fire{width:68px;height:68px}.mini-joy{width:46px;height:46px}
+  .touch-editor-actions{flex-direction:column;align-items:stretch}
+  .control-modal-foot{flex-direction:column}
+  .range-wrap{min-width:0}.range-wrap input{width:130px}
+}
+
+
+
+/* زر تحكم اللمس داخل المعركة */
+.touch-toggle{
+  position:absolute; top:12px; right:12px; z-index:30;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(8,14,28,.84); color:#fff;
+  padding:9px 13px; border-radius:12px; cursor:pointer;
+  font:700 13px inherit; backdrop-filter:blur(10px);
+  box-shadow:0 8px 25px rgba(0,0,0,.22);
+  transition:.18s ease; direction:rtl;
+}
+.touch-toggle:hover{transform:translateY(-1px);background:rgba(20,30,55,.94)}
+.touch-toggle.on{border-color:#38e8d1;box-shadow:0 0 0 1px rgba(56,232,209,.18),0 8px 28px rgba(0,0,0,.28)}
+.ability-card.selected-blue{box-shadow:0 0 0 2px #3d8bff,0 0 32px rgba(61,139,255,.35);transform:translateY(-6px) scale(1.025)}
+.ability-card.selected-red{box-shadow:0 0 0 2px #ff4d5e,0 0 32px rgba(255,77,94,.35);transform:translateY(-6px) scale(1.025)}
+.ability-card .rarity{font-size:10px;opacity:.7;margin-top:3px;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ==================== القائمة الرئيسية ==================== -->
+  <section class="screen active" id="menuScreen">
+    <div class="logo-wrap">
+      <h1 class="logo">علولا عمك</h1>
+      <div class="logo-sub">معركة دبابات لاعبين على نفس الجهاز</div>
+      <div class="tag-versus">
+        <span class="p blue">الأزرق</span>
+        <span style="color:var(--muted)">ضد</span>
+        <span class="p red">الأحمر</span>
+      </div>
+    </div>
+    <div class="menu-btns">
+      <button class="btn primary" data-go="ability">▶ ابدأ اللعب</button>
+      <button class="btn" data-go="maps">🗺️ اختيار الخرائط</button>
+      <button class="btn" data-go="settings">⚙️ الإعدادات</button>
+    </div>
+    <div class="score-strip">
+      <div class="sb">الأزرق<b id="mScoreB">0</b></div>
+      <div style="color:var(--muted)">—</div>
+      <div class="sr">الأحمر<b id="mScoreR">0</b></div>
+      <button class="btn ghost" id="resetScore" style="margin-inline-start:8px">تصفير</button>
+    </div>
+  </section>
+
+  <!-- محرر التحكم الاحترافي -->
+  <div class="control-modal" id="controlModal" aria-hidden="true">
+    <div class="control-modal-card">
+      <div class="control-modal-head">
+        <div>
+          <h2>🎮 محرر التحكم الاحترافي</h2>
+          <p>اضغط على مفتاح ثم اضغط أي زر من الكيبورد. واسحب مجموعات أزرار الهاتف داخل المعاينة.</p>
+        </div>
+        <button class="icon-btn" id="closeControlModal" aria-label="إغلاق">✕</button>
+      </div>
+
+      <div class="control-tabs">
+        <button class="control-tab active" data-ctab="keys">⌨️ مفاتيح الكمبيوتر</button>
+        <button class="control-tab" data-ctab="touch">📱 أزرار الهاتف</button>
+      </div>
+
+      <div class="control-pane active" id="controlPaneKeys">
+        <div class="key-bind-grid professional">
+          <div class="key-bind"><span>🔵 تقدم</span><button data-bind="b.up">↑</button></div>
+          <div class="key-bind"><span>🔵 رجوع</span><button data-bind="b.down">↓</button></div>
+          <div class="key-bind"><span>🔵 يسار</span><button data-bind="b.left">←</button></div>
+          <div class="key-bind"><span>🔵 يمين</span><button data-bind="b.right">→</button></div>
+          <div class="key-bind"><span>🔵 إطلاق</span><button data-bind="b.fire">مسافة</button></div>
+          <div class="key-bind"><span>🔴 تقدم</span><button data-bind="r.up">W</button></div>
+          <div class="key-bind"><span>🔴 رجوع</span><button data-bind="r.down">S</button></div>
+          <div class="key-bind"><span>🔴 يسار</span><button data-bind="r.left">A</button></div>
+          <div class="key-bind"><span>🔴 يمين</span><button data-bind="r.right">D</button></div>
+          <div class="key-bind"><span>🔴 إطلاق</span><button data-bind="r.fire">F</button></div>
+        </div>
+        <div class="key-status" id="keyStatus">اختر أي مفتاح لتغييره</div>
+      </div>
+
+      <div class="control-pane" id="controlPaneTouch">
+        <div class="touch-editor-stage" id="touchEditorStage">
+          <div class="stage-grid"></div>
+          <div class="stage-label blue">🔵 لاعب 1</div>
+          <div class="stage-label red">🔴 لاعب 2</div>
+          <div class="editor-control editor-joy blue" id="editJoyB"><div class="mini-joy"><span></span></div><b>حركة 🔵</b></div>
+          <div class="editor-control editor-fire blue" id="editFireB">🔥 إطلاق 🔵</div>
+          <div class="editor-control editor-joy red" id="editJoyR"><div class="mini-joy"><span></span></div><b>حركة 🔴</b></div>
+          <div class="editor-control editor-fire red" id="editFireR">🔥 إطلاق 🔴</div>
+        </div>
+        <div class="touch-editor-actions">
+          <span>✥ حرّك كل عصا وزر إطلاق بشكل مستقل — الأماكن تحفظ تلقائيًا</span>
+          <button class="btn small" id="resetTouchPositions">↩️ إعادة أماكن الهاتف</button>
+        </div>
+      </div>
+
+      <div class="control-modal-foot">
+        <button class="btn small" id="resetControls">↩️ الإعدادات الافتراضية للتحكم</button>
+        <button class="btn primary small" id="saveControlModal">💾 حفظ وإغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== الخرائط ==================== -->
+  <section class="screen" id="mapsScreen">
+    <div class="panel">
+      <h2>🗺️ اختيار الخريطة</h2>
+      <p class="desc">كل ساحة تغيّر أسلوب اللعب تمامًا — اختر الميدان الذي يناسب مزاجك.</p>
+      <div class="maps-grid" id="mapsGrid"></div>
+      <div class="back-row">
+        <button class="btn primary small" data-go="ability">ابدأ بهذه الخريطة</button>
+        <button class="btn small" data-go="menu">رجوع</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== الإعدادات ==================== -->
+  <section class="screen" id="settingsScreen">
+    <div class="panel">
+      <h2>⚙️ الإعدادات</h2>
+      <p class="desc">اضبط التجربة قبل أن تشتعل المعركة.</p>
+
+      <div class="set-row">
+        <div class="set-label">الأصوات<span>مؤثرات الإطلاق والانفجار</span></div>
+        <div class="seg" id="segSound">
+          <button data-val="1">تشغيل</button>
+          <button data-val="0">كتم</button>
+        </div>
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">وقت الجولة<span>عند انتهاء الوقت يفوز صاحب الصحة الأعلى</span></div>
+        <div class="seg" id="segTime">
+          <button data-val="60">60 ث</button>
+          <button data-val="90">90 ث</button>
+          <button data-val="120">120 ث</button>
+          <button data-val="0">بلا حد</button>
+        </div>
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">تحكم اللمس<span>أزرار على الشاشة للأجهزة اللمسية</span></div>
+        <div class="seg" id="segTouch">
+          <button data-val="1">ظاهر</button>
+          <button data-val="0">مخفي</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🎮 التحكم</div>
+        <div class="set-row">
+          <div class="set-label">تخصيص التحكم<span>غيّر مفاتيح الكمبيوتر ومواقع أزرار الهاتف من محرر واحد</span></div>
+          <button class="btn primary small" id="editControlsBtn">🎮 فتح محرر التحكم</button>
+        </div>
+        <div class="set-row">
+          <div class="set-label">اهتزاز اللمس<span>اهتزاز خفيف عند الإطلاق والإصابة على الأجهزة المدعومة</span></div>
+          <div class="seg" id="segHaptics"><button data-val="1">تشغيل</button><button data-val="0">كتم</button></div>
+        </div>
+        <div class="set-row">
+          <div class="set-label">شفافية أزرار الهاتف<span>تقدر تجعل الأزرار أوضح أو أخف فوق المعركة</span></div>
+          <div class="range-wrap"><input id="touchOpacity" type="range" min="35" max="100" step="5"><b id="touchOpacityVal">85%</b></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🎨 الرسوم والمؤثرات</div>
+        <div class="set-row">
+          <div class="set-label">مستوى المؤثرات<span>يتحكم بكثافة الجزيئات والانفجارات</span></div>
+          <div class="seg" id="segEffects"><button data-val="0">اقتصادي</button><button data-val="1">متوازن</button><button data-val="2">سينمائي</button></div>
+        </div>
+        <div class="set-row">
+          <div class="set-label">اهتزاز الشاشة<span>اهتزاز الكاميرا عند الإطلاق والانفجارات</span></div>
+          <div class="seg" id="segShake"><button data-val="1">تشغيل</button><button data-val="0">إيقاف</button></div>
+        </div>
+        <div class="set-row">
+          <div class="set-label">أرقام الضرر<span>إظهار مقدار الضرر فوق الدبابة عند الإصابة</span></div>
+          <div class="seg" id="segDamageNumbers"><button data-val="1">ظاهر</button><button data-val="0">مخفي</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🔊 الصوت</div>
+        <div class="set-row">
+          <div class="set-label">مستوى الصوت<span>تحكم مستقل بالصوت بدون تغيير المؤثرات</span></div>
+          <div class="range-wrap"><input id="volumeRange" type="range" min="0" max="100" step="5"><b id="volumeVal">80%</b></div>
+        </div>
+      </div>
+
+      <div class="settings-section danger-zone">
+        <div class="settings-section-title">🧹 البيانات</div>
+        <div class="set-row">
+          <div class="set-label">إرجاع إعدادات اللعبة<span>يمسح تخصيص التحكم والمؤثرات والإعدادات ويرجعها للوضع الأصلي</span></div>
+          <button class="btn small" id="resetAllSettings">↩️ إعادة كل الإعدادات</button>
+        </div>
+      </div>
+
+      <div class="keys-help">
+        <div class="keys-card blue">
+          <h4>🔵 اللاعب الأول</h4>
+          <div>الحركة: <kbd>▲</kbd><kbd>▼</kbd> تقدّم ورجوع</div>
+          <div>الدوران: <kbd>◄</kbd><kbd>►</kbd></div>
+          <div>إطلاق النار: <kbd>مسافة</kbd></div>
+        </div>
+        <div class="keys-card red">
+          <h4>🔴 اللاعب الثاني</h4>
+          <div>الحركة: <kbd>W</kbd><kbd>S</kbd> تقدّم ورجوع</div>
+          <div>الدوران: <kbd>A</kbd><kbd>D</kbd></div>
+          <div>إطلاق النار: <kbd>F</kbd></div>
+        </div>
+      </div>
+
+      <div class="back-row">
+        <button class="btn small" data-go="menu">رجوع للقائمة</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== القدرات العشوائية ==================== -->
+  <section class="screen" id="abilityScreen">
+    <div class="panel" style="width:min(620px,100%)">
+      <div class="ability-stage">
+        <h2 class="turn-title" id="abilityTitle">⚡ مولّد القدرات</h2>
+        <p class="desc" id="abilityHint">النظام سيخلط جميع القدرات بسرية، ثم يختار قدرة مختلفة عشوائيًا لكل لاعب.</p>
+        <div class="ability-machine" id="abilityMachine">
+          <div class="ability-ring"></div><div class="ability-ring r2"></div>
+          <div class="ability-orbit">
+            <span>⚡ سرعة</span><span>🔥 قوة</span><span>🛡️ درع</span><span>🎯 اختراق</span>
+          </div>
+          <div class="ability-core" id="abilityCore">?</div>
+        </div>
+        <div class="ability-deck" id="abilityDeck">
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+          <div class="ability-card hidden"><div class="card-icon">?</div><div class="card-name">مخفي</div><div class="card-lock">سرّي</div></div>
+        </div>
+        <div class="ability-status" id="abilityStatus">كل بطاقة تخفي قدرة مختلفة — الحظ يقرر!</div>
+        <button class="btn primary" id="revealBtn">✨ كشف القدرات العشوائية</button>
+        <div class="ability-reveal">
+          <div class="picked blue" id="pickB"><div class="who">🔵 اللاعب الأول</div><div class="ab">—<small>بانتظار السحب</small></div></div>
+          <div class="picked red" id="pickR"><div class="who">🔴 اللاعب الثاني</div><div class="ab">—<small>بانتظار السحب</small></div></div>
+        </div>
+        <div class="back-row" style="margin-top:4px">
+          <button class="btn primary small" id="toBattle" style="display:none">⚔️ إلى ساحة المعركة</button>
+          <button class="btn small" data-go="menu">رجوع</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ساحة المعركة ==================== -->
+  <section class="screen" id="gameScreen">
+    <div class="arena-wrap">
+      <div class="hud">
+        <div class="hud-side blue">
+          <div class="name"><span>🔵 اللاعب الأول</span><span class="abtxt" id="hudAbB"></span></div>
+          <div class="bar"><div class="fill" id="barB"></div><div class="hp-text" id="hpTxtB"></div></div>
+        </div>
+        <div class="hud-center">
+          <div class="timer" id="timer">90</div>
+          <div class="sc">النتيجة <b class="b" id="scB">0</b> — <b class="r" id="scR">0</b></div>
+        </div>
+        <div class="hud-side red">
+          <div class="name"><span class="abtxt" id="hudAbR"></span><span>🔴 اللاعب الثاني</span></div>
+          <div class="bar"><div class="fill" id="barR"></div><div class="hp-text" id="hpTxtR"></div></div>
+        </div>
+      </div>
+      <canvas id="game" width="960" height="600"></canvas>
+      <button class="touch-toggle" id="toggleTouchBtn" type="button">📱 تحكم اللمس: مخفي</button>
+      <div class="esc-hint">اضغط <kbd>Esc</kbd> للعودة إلى القائمة</div>
+    </div>
+
+    <!-- تحكم اللمس -->
+    <div id="touchUI">
+      <div class="touch-control touch-joystick blue" id="joyB" aria-label="عصا حركة اللاعب الأول"><div class="joy-stick"></div></div>
+      <div class="touch-control touch-fire blue" id="fireB">🔥 إطلاق</div>
+      <div class="touch-control touch-joystick red" id="joyR" aria-label="عصا حركة اللاعب الثاني"><div class="joy-stick"></div></div>
+      <div class="touch-control touch-fire red" id="fireR">🔥 إطلاق</div>
+    </div>
+
+    <!-- شاشة النتيجة -->
+    <div class="overlay" id="resultOverlay">
+      <div class="result-card">
+        <div class="crown" id="resCrown">👑</div>
+        <h2 id="resTitle">الفائز</h2>
+        <div class="sub" id="resSub"></div>
+        <div class="tally">
+          <span class="b" id="tallyB">0</span>
+          <span class="x">مقابل</span>
+          <span class="r" id="tallyR">0</span>
+        </div>
+        <div class="result-actions">
+          <button class="btn primary" id="btnNewRound">🎁 جولة جديدة (قدرات عشوائية)</button>
+          <button class="btn" id="btnRematch">🔁 إعادة بنفس القدرات</button>
+          <button class="btn" data-go="menu">🏠 القائمة الرئيسية</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   علولا عمك — لعبة دبابات 2D لاعبين على نفس الجهاز
+   بُنيت كملف واحد: بلا مكتبات خارجية، بلا صور — كل شيء مرسوم على Canvas.
+   التنظيم: (1) الإعدادات والتخزين (2) الصوت (3) الخرائط (4) القدرات
+            (5) القدرات العشوائية (6) محرك اللعبة (7) الرسم (8) الواجهة والتنقّل
+   ========================================================================== */
+
+/* ============ أدوات عامة ============ */
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const rand  = (a, b) => a + Math.random() * (b - a);
+
+/* ============ (1) الإعدادات والتخزين ============ */
+const DEFAULTS = {
+  sound: 1, volume: 80, roundTime: 90, touch: 0, map: "classic",
+  controlEdit: 0, effects: 2, screenShake: 1, damageNumbers: 1,
+  touchOpacity: 85, haptics: 1,
+  touchPositions: {
+    bjoy: { left: 7, top: null, right: null, bottom: 10 },
+    bfire: { left: 23, top: null, right: null, bottom: 13 },
+    rjoy: { left: null, top: null, right: 7, bottom: 10 },
+    rfire: { left: null, top: null, right: 23, bottom: 13 }
+  },
+  keys: {
+    b: { up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight", fire: "Space" },
+    r: { up: "KeyW", down: "KeyS", left: "KeyA", right: "KeyD", fire: "KeyF" }
+  }
+};
+const settings = Object.assign({}, DEFAULTS);
+let score = { blue: 0, red: 0 };
+
+function loadStore() {
+  try {
+    const s = localStorage.getItem("alola_settings");
+    if (s) Object.assign(settings, JSON.parse(s));
+    const sc = localStorage.getItem("alola_score");
+    if (sc) score = Object.assign({ blue: 0, red: 0 }, JSON.parse(sc));
+  } catch (e) { /* التخزين قد يكون معطّلًا — نكمل بالقيم الافتراضية */ }
+  // محرر التحكم نافذة مؤقتة فقط، ولا يجوز أن يجمّد محرك المعركة.
+  settings.controlEdit = 0;
+  if (settings.touch === null || settings.touch === undefined) settings.touch = 0;
+  if (![0,1].includes(Number(settings.touch))) settings.touch = 0;
+  if (!settings.touchPositions) settings.touchPositions = deepClone(DEFAULTS.touchPositions);
+  // ترحيل إعدادات التحكم القديمة إلى نظام العصا + زر الإطلاق المستقل.
+  if (settings.touchPositions.bpad || settings.touchPositions.rpad) {
+    const old = settings.touchPositions;
+    settings.touchPositions = deepClone(DEFAULTS.touchPositions);
+    if (old.bpad) { settings.touchPositions.bjoy = { left: old.bpad.left ?? 7, top: old.bpad.top, right: old.bpad.right, bottom: old.bpad.bottom ?? 10 }; }
+    if (old.rpad) { settings.touchPositions.rjoy = { left: old.rpad.left, top: old.rpad.top, right: old.rpad.right ?? 7, bottom: old.rpad.bottom ?? 10 }; }
+  }
+  for (const k of ["bjoy","bfire","rjoy","rfire"]) {
+    if (!settings.touchPositions[k]) settings.touchPositions[k] = deepClone(DEFAULTS.touchPositions[k]);
+  }
+}
+function saveStore() {
+  try {
+    localStorage.setItem("alola_settings", JSON.stringify(settings));
+    localStorage.setItem("alola_score", JSON.stringify(score));
+  } catch (e) { /* تجاهل */ }
+}
+loadStore();
+
+/* ============ (2) الصوت — مولّد نغمات بسيط ============ */
+const Sound = (() => {
+  let ctx = null;
+  function ac() {
+    if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(freq, dur, type, vol, slideTo) {
+    if (!settings.sound) return;
+    const c = ac(); if (!c) return;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || "square";
+    o.frequency.setValueAtTime(freq, c.currentTime);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(30, slideTo), c.currentTime + dur);
+    g.gain.setValueAtTime((vol || 0.08) * (settings.volume / 100), c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0008, c.currentTime + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(); o.stop(c.currentTime + dur + 0.02);
+  }
+  function noise(dur, vol) {
+    if (!settings.sound) return;
+    const c = ac(); if (!c) return;
+    const n = Math.floor(c.sampleRate * dur);
+    const buf = c.createBuffer(1, n, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    const src = c.createBufferSource(); src.buffer = buf;
+    const g = c.createGain(); g.gain.value = (vol || 0.15) * (settings.volume / 100);
+    const f = c.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1100;
+    src.connect(f); f.connect(g); g.connect(c.destination); src.start();
+  }
+  return {
+    shoot:  () => tone(620, 0.09, "square", 0.05, 180),
+    hit:    () => { tone(200, 0.12, "sawtooth", 0.07, 90); noise(0.12, 0.09); },
+    bounce: () => tone(340, 0.04, "triangle", 0.03),
+    boom:   () => { noise(0.5, 0.22); tone(120, 0.45, "sawtooth", 0.1, 40); },
+    tick:   () => tone(900, 0.025, "square", 0.025),
+    win:    () => { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.18, "triangle", 0.07), i * 120)); },
+    click:  () => tone(480, 0.05, "triangle", 0.04),
+    unlock: () => ac()
+  };
+})();
+
+/* ============ (3) الخرائط ============ */
+const W = 960, H = 600;          // أبعاد العالم (ثابتة، والكانفاس يتقاس عليها)
+const MAPS = {
+  classic: {
+    name: "الكلاسيكية",
+    desc: "ساحة متوازنة بحواجز قليلة — تصويب ومناورة.",
+    walls: [
+      { x: 180, y: 110, w: 38, h: 150 }, { x: 180, y: 340, w: 38, h: 150 },
+      { x: 742, y: 110, w: 38, h: 150 }, { x: 742, y: 340, w: 38, h: 150 },
+      { x: 440, y: 50,  w: 80, h: 70  }, { x: 440, y: 480, w: 80, h: 70 },
+      { x: 430, y: 255, w: 100, h: 90 }
+    ],
+    spawn: [{ x: 90, y: 300, a: 0 }, { x: 870, y: 300, a: Math.PI }]
+  },
+  maze: {
+    name: "المتاهة",
+    desc: "جدران كثيرة — الالتفاف والكمائن هي السلاح.",
+    walls: [
+      { x: 140, y: 70,  w: 24, h: 200 }, { x: 140, y: 350, w: 24, h: 190 },
+      { x: 250, y: 170, w: 210, h: 24 }, { x: 250, y: 400, w: 210, h: 24 },
+      { x: 455, y: 60,  w: 24, h: 150 }, { x: 455, y: 340, w: 24, h: 200 },
+      { x: 560, y: 170, w: 210, h: 24 }, { x: 560, y: 400, w: 210, h: 24 },
+      { x: 800, y: 70,  w: 24, h: 200 }, { x: 800, y: 350, w: 24, h: 190 },
+      { x: 300, y: 270, w: 24, h: 90  }, { x: 660, y: 270, w: 24, h: 90 },
+      { x: 430, y: 255, w: 100, h: 24 }
+    ],
+    spawn: [{ x: 68, y: 300, a: 0 }, { x: 892, y: 300, a: Math.PI }]
+  },
+  open: {
+    name: "الساحة المفتوحة",
+    desc: "بلا حواجز — سرعة، تصويب، وأعصاب باردة.",
+    walls: [],
+    spawn: [{ x: 110, y: 300, a: 0 }, { x: 850, y: 300, a: Math.PI }]
+  }
+};
+
+/* ============ (4) القدرات ============ */
+const ABILITIES = [
+  { id: "speed",   icon: "⚡", name: "سرعة خاطفة",       short: "⚡ سرعة",     color: "ffd84d", rarity:"MOBILITY" , desc: "حركة ودوران أسرع بكثير" },
+  { id: "damage",  icon: "🔥", name: "قذيفة ثقيلة",      short: "🔥 قوة",      color: "ff6a3d", rarity:"POWER" , desc: "ضرر القذيفة مضاعف" },
+  { id: "shield",  icon: "🛡️", name: "درع طاقة",         short: "🛡️ درع",      color: "4dc3ff", rarity:"DEFENSE" , desc: "يقلّل الضرر المتلقى ٤٥٪" },
+  { id: "pierce",  icon: "🎯", name: "اختراق",            short: "🎯 اختراق",   color: "a06bff", rarity:"TACTICAL" , desc: "القذائف تمر عبر الحواجز" },
+  { id: "health",  icon: "💚", name: "درع حيوي",          short: "💚 صحة",      color: "3ddc84", rarity:"VITAL" , desc: "يبدأ بـ ١٦٠ نقطة صحة" },
+  { id: "rapid",   icon: "⚡", name: "طلق سريع",          short: "⚡ طلق سريع", color: "38e8d1", rarity:"RAPID FIRE" , desc: "إعادة تلقيم أسرع بكثير" },
+  { id: "reflect", icon: "↩️", name: "عكس الضرر",        short: "↩️ عكس 25%", color: "ff5fc8", rarity:"COUNTER" , desc: "يعكس ٢٥٪ من الضرر الفعلي للمهاجم" }
+];
+const abById = (id) => ABILITIES.find(a => a.id === id);
+
+/* ثوابت التوازن */
+const BASE = {
+  hp: 100, hpBoost: 160,
+  speed: 132, speedBoost: 205,
+  turn: 2.9, turnBoost: 4.0,
+  dmg: 13, dmgBoost: 26,
+  shieldMul: 0.55,
+  cooldown: 620, cooldownFast: 480, cooldownRapid: 250,
+  bulletSpeed: 400, bulletLife: 3.2, bulletBounces: 1,
+  tankR: 15
+};
+
+/* ============ (5) القدرات العشوائية ============ */
+let chosen = [null, null];
+let abilityRolling = false;
+
+const abilityCards = () => $$("#abilityDeck .ability-card");
+
+function paintAbilityCards(shuffle = false) {
+  const cards = abilityCards();
+  cards.forEach(card => {
+    card.classList.toggle("shuffle", shuffle);
+    if (!shuffle) {
+      card.classList.add("hidden");
+      card.classList.remove("revealed");
+      card.style.borderColor = "";
+      card.querySelector(".card-icon").textContent = "?";
+      card.querySelector(".card-name").textContent = "مجهول";
+      card.querySelector(".card-lock").textContent = "قدرة سرية";
+      card.classList.remove("selected-blue","selected-red");
+      const rarity = card.querySelector(".rarity");
+      if(rarity) rarity.remove();
+    }
+  });
+}
+
+function revealAbilityCard(card, ab) {
+  card.classList.remove("shuffle", "hidden");
+  card.classList.add("revealed");
+  card.querySelector(".card-icon").textContent = ab.icon;
+  card.querySelector(".card-name").textContent = ab.name;
+  card.querySelector(".card-lock").textContent = ab.short;
+  card.style.borderColor = "#" + ab.color;
+  let rarity = card.querySelector(".rarity");
+  if(!rarity){ rarity=document.createElement("div"); rarity.className="rarity"; card.appendChild(rarity); }
+  rarity.textContent = ab.rarity || "TACTICAL";
+  rarity.style.color = "#" + ab.color;
+}
+
+function randomAbility() {
+  return ABILITIES[Math.floor(Math.random() * ABILITIES.length)];
+}
+
+function revealAbilities() {
+  if (abilityRolling) return;
+  abilityRolling = true;
+  Sound.unlock();
+  const btn = $("#revealBtn");
+  btn.disabled = true; btn.style.opacity = .5;
+  const machine = $("#abilityMachine");
+  machine.classList.add("rolling"); machine.classList.remove("done");
+  $("#abilityCore").textContent = "⚡";
+  paintAbilityCards(true);
+  $("#abilityStatus").textContent = "🔐 تشفير السحب... جاري خلط جميع القدرات";
+  $("#abilityHint").textContent = "الاختيار يتم عشوائيًا بالكامل، والنتيجة لا تظهر حتى ينتهي المولد.";
+  const cards = abilityCards();
+  let tick = 0;
+  const shuffleTimer = setInterval(() => {
+    Sound.tick(); tick++;
+    cards.forEach(c => {
+      const ab = randomAbility();
+      c.querySelector(".card-icon").textContent = ab.icon;
+    });
+    $("#abilityCore").textContent = ["⚡","🔥","🛡️","🎯","💚","↯","↩️"][Math.floor(Math.random()*7)];
+    if (tick >= 14) {
+      clearInterval(shuffleTimer);
+      cards.forEach(c => c.classList.remove("shuffle"));
+      // توليد مجموعة واحدة ثم اختيار بطاقتين محددتين منها.
+      // هذا يجعل النتيجة المرئية هي نفسها النتيجة الفعلية داخل المعركة.
+      const pool = [...ABILITIES].sort(() => Math.random() - 0.5);
+      const selected = [pool[0], pool[1]];
+      chosen[0] = selected[0].id;
+      chosen[1] = selected[1].id;
+      cards.forEach((c, i) => revealAbilityCard(c, pool[i % pool.length]));
+      cards.forEach(c => c.classList.remove("selected-blue","selected-red"));
+      revealAbilityCard(cards[0], selected[0]);
+      revealAbilityCard(cards[1], selected[1]);
+      cards[0].classList.add("selected-blue");
+      cards[1].classList.add("selected-red");
+      const b = selected[0], r = selected[1];
+      $("#abilityCore").textContent = "✦";
+      machine.classList.remove("rolling"); machine.classList.add("done");
+      $("#pickB").classList.add("ready");
+      $("#pickR").classList.add("ready");
+      $("#pickB .ab").innerHTML = b.icon + " " + b.name + "<small>" + b.desc + "</small>";
+      $("#pickR .ab").innerHTML = r.icon + " " + r.name + "<small>" + r.desc + "</small>";
+      $("#abilityStatus").textContent = "🎉 تم التوليد! قدرة سرية مختلفة لكل لاعب.";
+      $("#abilityTitle").textContent = "⚔️ القدرات جاهزة";
+      $("#abilityHint").textContent = "هذه القدرات ثابتة لهذه الجولة. ادخل المعركة وشوف مين استغل قدرته أفضل.";
+      $("#revealBtn").style.display = "none";
+      $("#toBattle").style.display = "inline-block";
+      Sound.win(); abilityRolling = false;
+    }
+  }, 100);
+}
+
+function resetAbilities() {
+  abilityRolling = false;
+  chosen = [null, null];
+  $("#abilityTitle").textContent = "⚡ مولّد القدرات";
+  $("#abilityHint").textContent = "النظام سيخلط جميع القدرات بسرية، ثم يختار قدرة مختلفة عشوائيًا لكل لاعب.";
+  $("#abilityStatus").textContent = "المولد جاهز — اضغط تشغيل السحب.";
+  $("#abilityMachine").classList.remove("rolling","done");
+  $("#abilityCore").textContent = "?";
+  $("#pickB").classList.remove("ready");
+  $("#pickR").classList.remove("ready");
+  $("#pickB .ab").innerHTML = "—<small>بانتظار السحب</small>";
+  $("#pickR .ab").innerHTML = "—<small>بانتظار السحب</small>";
+  $("#revealBtn").style.display = "inline-block";
+  $("#revealBtn").disabled = false;
+  $("#revealBtn").style.opacity = 1;
+  $("#toBattle").style.display = "none";
+  paintAbilityCards(false);
+}
+
+/* ============ (6) محرك اللعبة ============ */
+const cv = $("#game"), ctx = cv.getContext("2d");
+const keys = Object.create(null);
+let tanks = [], bullets = [], parts = [], sparks = [];
+let currentMap = MAPS[settings.map] ? settings.map : "classic";
+let running = false, lastT = 0, timeLeft = 0, shake = 0, roundOver = false, countdown = 0;
+
+function makeTank(i, abilityId) {
+  const sp = MAPS[currentMap].spawn[i];
+  const ab = abilityId;
+  return {
+    i, x: sp.x, y: sp.y, a: sp.a,
+    color: i === 0 ? "#3d8bff" : "#ff4d5e",
+    dark:  i === 0 ? "#1b4f9e" : "#9e2231",
+    ability: ab,
+    maxHp: ab === "health" ? BASE.hpBoost : BASE.hp,
+    hp:    ab === "health" ? BASE.hpBoost : BASE.hp,
+    speed: ab === "speed" ? BASE.speedBoost : BASE.speed,
+    turn:  ab === "speed" ? BASE.turnBoost : BASE.turn,
+    dmg:   ab === "damage" ? BASE.dmgBoost : BASE.dmg,
+    pierce: ab === "pierce",
+    shield: ab === "shield",
+    reflect: ab === "reflect",
+    cd: 0, flash: 0, recoil: 0, tread: 0,
+    keys: i === 0
+      ? { ...settings.keys.b }
+      : { ...settings.keys.r }
+  };
+}
+
+function startRound(newAbilities) {
+  if (newAbilities) { /* القدرات محدّدة مسبقًا من العجلة */ }
+  tanks = [makeTank(0, chosen[0]), makeTank(1, chosen[1])];
+  bullets = []; parts = []; sparks = [];
+  timeLeft = settings.roundTime > 0 ? settings.roundTime : Infinity;
+  roundOver = false; shake = 0; countdown = 2.6;
+  $("#resultOverlay").classList.remove("active");
+  $("#hudAbB").textContent = chosen[0] ? abById(chosen[0]).short : "";
+  $("#hudAbR").textContent = chosen[1] ? abById(chosen[1]).short : "";
+  updateHUD();
+  show("game");
+  running = true; lastT = performance.now();
+  requestAnimationFrame(loop);
+}
+
+/* --- تصادم دائرة/مستطيل --- */
+function hitsWall(x, y, r) {
+  if (x - r < 0 || y - r < 0 || x + r > W || y + r > H) return true;
+  const ws = MAPS[currentMap].walls;
+  for (let i = 0; i < ws.length; i++) {
+    const w = ws[i];
+    const nx = clamp(x, w.x, w.x + w.w), ny = clamp(y, w.y, w.y + w.h);
+    const dx = x - nx, dy = y - ny;
+    if (dx * dx + dy * dy < r * r) return true;
+  }
+  return false;
+}
+function pointInWall(x, y) {
+  const ws = MAPS[currentMap].walls;
+  for (let i = 0; i < ws.length; i++) {
+    const w = ws[i];
+    if (x > w.x && x < w.x + w.w && y > w.y && y < w.y + w.h) return w;
+  }
+  return null;
+}
+
+function fire(t) {
+  if (t.cd > 0 || roundOver || countdown > 0) return;
+  t.cd = t.ability === "rapid" ? BASE.cooldownRapid : (t.ability === "speed" ? BASE.cooldownFast : BASE.cooldown);
+  t.flash = 0.09; t.recoil = 5;
+  const muzzle = BASE.tankR + 12;
+  bullets.push({
+    x: t.x + Math.cos(t.a) * muzzle,
+    y: t.y + Math.sin(t.a) * muzzle,
+    vx: Math.cos(t.a) * BASE.bulletSpeed,
+    vy: Math.sin(t.a) * BASE.bulletSpeed,
+    owner: t.i, dmg: t.dmg, pierce: t.pierce,
+    bounces: t.pierce ? 0 : BASE.bulletBounces,
+    life: BASE.bulletLife, r: 4.5,
+    color: t.pierce ? "#a06bff" : (t.dmg > BASE.dmg ? "#ff9a3d" : t.color),
+    trail: []
+  });
+  Sound.shoot();
+  if (settings.screenShake) shake = Math.max(shake, 3);
+}
+
+function damage(target, amount, bx, by, attackerIdx = 1 - target.i) {
+  const real = target.shield ? amount * BASE.shieldMul : amount;
+  target.hp = Math.max(0, target.hp - real);
+  Sound.hit();
+  if (settings.screenShake) shake = Math.max(shake, 7);
+  burst(bx, by, target.shield ? "#4dc3ff" : "#ffb347", 16);
+
+  // عكس 25% من الضرر الفعلي إلى المهاجم
+  if (target.reflect && attackerIdx >= 0 && tanks[attackerIdx] && tanks[attackerIdx].hp > 0) {
+    const reflected = real * 0.25;
+    const attacker = tanks[attackerIdx];
+    attacker.hp = Math.max(0, attacker.hp - reflected);
+    burst(attacker.x, attacker.y, "#ff5fc8", 8);
+    Sound.hit();
+    if (attacker.hp <= 0) {
+      updateHUD();
+      endRound(target.i);
+      return;
+    }
+  }
+  updateHUD();
+  if (target.hp <= 0) endRound(1 - target.i);
+}
+
+function burst(x, y, color, n) {
+  const mult = settings.effects === 0 ? 0.45 : settings.effects === 1 ? 0.75 : 1.35;
+  n = Math.max(1, Math.round(n * mult));
+  for (let i = 0; i < n; i++) {
+    const a = rand(0, Math.PI * 2), s = rand(40, 230);
+    parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: rand(.25, .7), max: .7, color, r: rand(1.5, 3.6) });
+  }
+}
+
+function endRound(winnerIdx) {
+  if (roundOver) return;
+  roundOver = true; running = false;
+  const loser = tanks[1 - winnerIdx];
+  burst(loser.x, loser.y, "#ff9a3d", 60);
+  burst(loser.x, loser.y, "#ffe08a", 40);
+  Sound.boom();
+  if (settings.screenShake) shake = 16;
+  drawFrame(0);                       // لقطة أخيرة للانفجار
+
+  if (winnerIdx === 0) score.blue++; else score.red++;
+  saveStore();
+  updateScoreUI();
+
+  setTimeout(() => {
+    const blue = winnerIdx === 0;
+    $("#resCrown").textContent = "👑";
+    const t = $("#resTitle");
+    t.textContent = blue ? "فاز اللاعب الأزرق!" : "فاز اللاعب الأحمر!";
+    t.className = blue ? "blue" : "red";
+    const wAb = chosen[winnerIdx] ? abById(chosen[winnerIdx]) : null;
+    $("#resSub").textContent = wAb ? ("انتصر بقدرة " + wAb.icon + " " + wAb.name) : "";
+    $("#tallyB").textContent = score.blue;
+    $("#tallyR").textContent = score.red;
+    $("#resultOverlay").classList.add("active");
+    Sound.win();
+  }, 900);
+}
+
+function update(dt) {
+  // محرر التحكم نافذة إعدادات فقط؛ لا يوقف اللعبة ولا العد التنازلي.
+  // لو بقيت قيمة قديمة في التخزين، يتم تجاهلها هنا.
+  if (settings.controlEdit) settings.controlEdit = 0;
+
+  // العد التنازلي قبل الانطلاق
+  if (countdown > 0) { countdown -= dt; if (countdown <= 0) Sound.click(); }
+
+  // الوقت
+  if (countdown <= 0 && timeLeft !== Infinity) {
+    const before = Math.ceil(timeLeft);
+    timeLeft -= dt;
+    const after = Math.ceil(timeLeft);
+    if (after !== before) { updateTimer(); if (after <= 5 && after > 0) Sound.tick(); }
+    if (timeLeft <= 0) {
+      timeLeft = 0; updateTimer();
+      const pb = tanks[0].hp / tanks[0].maxHp, pr = tanks[1].hp / tanks[1].maxHp;
+      endRound(pb >= pr ? 0 : 1);
+      return;
+    }
+  }
+
+  // الدبابات
+  for (const t of tanks) {
+    t.cd = Math.max(0, t.cd - dt * 1000);
+    t.flash = Math.max(0, t.flash - dt);
+    t.recoil *= 0.82;
+
+    if (countdown <= 0 && !roundOver) {
+      const ta = touchAnalog[t===tanks[0]?"b":"r"] || {x:0,y:0};
+      const touchLen = Math.hypot(ta.x, ta.y);
+      let moved = false;
+
+      // الهاتف: حركة 360° مباشرة من العصا، بدون نظام دوران أمامي/خلفي.
+      // هذا يجعل الدبابة تتحرك في نفس اتجاه سحب إصبع اللاعب.
+      if (touchLen > 0.08) {
+        const mag = clamp(touchLen, 0, 1);
+        const d = t.speed * mag * dt;
+        const dirX = ta.x / touchLen, dirY = ta.y / touchLen;
+        const nx = t.x + dirX * d, ny = t.y + dirY * d;
+        if (!hitsWall(nx, t.y, BASE.tankR) && !tankOverlap(t, nx, t.y)) t.x = nx;
+        if (!hitsWall(t.x, ny, BASE.tankR) && !tankOverlap(t, t.x, ny)) t.y = ny;
+        // الدبابة تتجه تلقائياً إلى اتجاه الحركة.
+        t.a = Math.atan2(dirY, dirX);
+        t.tread += d;
+        moved = true;
+      } else {
+        // الكمبيوتر: نظام الدوران التقليدي يبقى كما هو.
+        const turnInput = (keys[t.keys.right] ? 1 : 0) - (keys[t.keys.left] ? 1 : 0);
+        t.a += turnInput * t.turn * dt;
+        const mv = (keys[t.keys.up] ? 1 : 0) - (keys[t.keys.down] ? 0.62 : 0);
+        if (mv !== 0) {
+          const d = t.speed * mv * dt;
+          const nx = t.x + Math.cos(t.a) * d, ny = t.y + Math.sin(t.a) * d;
+          if (!hitsWall(nx, t.y, BASE.tankR) && !tankOverlap(t, nx, t.y)) t.x = nx;
+          if (!hitsWall(t.x, ny, BASE.tankR) && !tankOverlap(t, t.x, ny)) t.y = ny;
+          t.tread += Math.abs(d);
+          moved = true;
+        }
+      }
+      if (keys[t.keys.fire]) fire(t);
+    }
+  }
+
+  // القذائف
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const b = bullets[i];
+    b.life -= dt;
+    if (b.life <= 0) { bullets.splice(i, 1); continue; }
+
+    b.trail.push({ x: b.x, y: b.y });
+    if (b.trail.length > 10) b.trail.shift();
+
+    let nx = b.x + b.vx * dt, ny = b.y + b.vy * dt;
+
+    // حدود الساحة: ارتداد دائمًا (حتى مع الاختراق)
+    if (nx < b.r || nx > W - b.r) {
+      if (b.bounces <= 0 && !b.pierce) { bullets.splice(i, 1); burst(b.x, b.y, b.color, 6); continue; }
+      if (!b.pierce) b.bounces--;
+      b.vx *= -1; nx = clamp(nx, b.r, W - b.r); Sound.bounce();
+    }
+    if (ny < b.r || ny > H - b.r) {
+      if (b.bounces <= 0 && !b.pierce) { bullets.splice(i, 1); burst(b.x, b.y, b.color, 6); continue; }
+      if (!b.pierce) b.bounces--;
+      b.vy *= -1; ny = clamp(ny, b.r, H - b.r); Sound.bounce();
+    }
+
+    // الحواجز الداخلية
+    if (!b.pierce) {
+      const wx = pointInWall(nx, b.y), wy = pointInWall(b.x, ny);
+      if (wx || wy) {
+        if (b.bounces <= 0) { bullets.splice(i, 1); burst(nx, ny, b.color, 8); continue; }
+        b.bounces--;
+        if (wx) { b.vx *= -1; nx = b.x; }
+        if (wy) { b.vy *= -1; ny = b.y; }
+        if (!wx && !wy) { b.vx *= -1; b.vy *= -1; }
+        Sound.bounce();
+        sparks.push({ x: nx, y: ny, life: .18, color: b.color });
+      }
+    }
+
+    b.x = nx; b.y = ny;
+
+    // إصابة الدبابات
+    let removed = false;
+    for (const t of tanks) {
+      if (roundOver) break;
+      const dx = b.x - t.x, dy = b.y - t.y;
+      const rr = BASE.tankR + b.r;
+      // لا تصيب صاحبها في أول لحظات الانطلاق
+      if (t.i === b.owner && b.life > BASE.bulletLife - 0.12) continue;
+      if (dx * dx + dy * dy < rr * rr) {
+        damage(t, b.dmg, b.x, b.y);
+        bullets.splice(i, 1); removed = true; break;
+      }
+    }
+    if (removed) continue;
+  }
+
+  // الجزيئات
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.life -= dt;
+    if (p.life <= 0) { parts.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vx *= 0.94; p.vy *= 0.94;
+  }
+  for (let i = sparks.length - 1; i >= 0; i--) {
+    sparks[i].life -= dt;
+    if (sparks[i].life <= 0) sparks.splice(i, 1);
+  }
+
+  shake *= 0.86;
+}
+
+function tankOverlap(self, x, y) {
+  for (const o of tanks) {
+    if (o === self) continue;
+    const dx = x - o.x, dy = y - o.y;
+    if (dx * dx + dy * dy < (BASE.tankR * 2) * (BASE.tankR * 2) * 0.92) return true;
+  }
+  return false;
+}
+
+function loop(now) {
+  if (!running) return;
+  const dt = Math.min(0.033, (now - lastT) / 1000);
+  lastT = now;
+  update(dt);
+  drawFrame(dt);
+  if (running) requestAnimationFrame(loop);
+}
+
+/* ============ (7) الرسم ============ */
+function drawFrame() {
+  ctx.save();
+  if (shake > 0.4) ctx.translate(rand(-shake, shake), rand(-shake, shake));
+
+  // الأرضية
+  ctx.fillStyle = "#0c1220";
+  ctx.fillRect(-30, -30, W + 60, H + 60);
+  ctx.strokeStyle = "rgba(255,255,255,.035)";
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+  // خط المنتصف
+  ctx.setLineDash([10, 12]);
+  ctx.strokeStyle = "rgba(255,255,255,.07)";
+  ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // الحواجز
+  for (const w of MAPS[currentMap].walls) {
+    ctx.fillStyle = "#223055";
+    roundRect(ctx, w.x, w.y, w.w, w.h, 5); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.08)";
+    roundRect(ctx, w.x + 3, w.y + 3, w.w - 6, Math.max(3, w.h * 0.18), 3); ctx.fill();
+  }
+
+  // أثر القذائف
+  for (const b of bullets) {
+    for (let i = 0; i < b.trail.length; i++) {
+      const p = b.trail[i], a = (i / b.trail.length) * 0.5;
+      ctx.globalAlpha = a; ctx.fillStyle = b.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, b.r * (i / b.trail.length) * 0.9, 0, 6.3); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // الدبابات
+  for (const t of tanks) drawTank(t);
+
+  // القذائف
+  for (const b of bullets) {
+    ctx.save();
+    ctx.shadowColor = b.color; ctx.shadowBlur = 14;
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.3); ctx.fill();
+    ctx.fillStyle = b.color; ctx.globalAlpha = .75;
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r + 2.4, 0, 6.3); ctx.fill();
+    ctx.restore();
+  }
+
+  // الشرر والجزيئات
+  for (const s of sparks) {
+    ctx.globalAlpha = s.life / .18; ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, 6.3); ctx.fill();
+  }
+  for (const p of parts) {
+    ctx.globalAlpha = clamp(p.life / p.max, 0, 1);
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+
+  // العد التنازلي — يمنع الحركة والإطلاق ثم يطلق الجولة فعليًا
+  if (countdown > 0) {
+    ctx.save();
+    ctx.fillStyle = "rgba(6,10,20,.62)";
+    ctx.fillRect(0, 0, W, H);
+    const n = Math.ceil(countdown);
+    const frac = countdown - Math.floor(countdown);
+    const pulse = 1 + Math.sin(frac * Math.PI) * .10;
+    ctx.translate(W / 2, H / 2 - 5);
+    ctx.scale(pulse, pulse);
+    ctx.globalAlpha = clamp(.55 + frac * .7, .55, 1);
+    ctx.fillStyle = "#ffc63d";
+    ctx.font = "900 150px Cairo, sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(String(Math.max(1, n)), 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#e8eefc"; ctx.font = "800 25px Cairo, sans-serif";
+    ctx.fillText("استعد للمعركة", 0, 105);
+    ctx.restore();
+  }
+}
+
+function drawTank(t) {
+  const R = BASE.tankR;
+  ctx.save();
+  ctx.translate(t.x, t.y);
+
+  // هالة القدرة
+  if (t.ability) {
+    const ab = abById(t.ability);
+    const pulse = 1 + Math.sin(performance.now() / 260) * 0.09;
+    ctx.save();
+    ctx.globalAlpha = 0.28;
+    ctx.fillStyle = "#" + ab.color;
+    ctx.beginPath(); ctx.arc(0, 0, (R + 11) * pulse, 0, 6.3); ctx.fill();
+    ctx.globalAlpha = 0.55;
+    ctx.lineWidth = 2; ctx.strokeStyle = "#" + ab.color;
+    ctx.beginPath(); ctx.arc(0, 0, (R + 9) * pulse, 0, 6.3); ctx.stroke();
+    ctx.restore();
+  }
+
+  ctx.rotate(t.a);
+  const rec = -t.recoil;
+
+  // الجنازير
+  ctx.fillStyle = t.dark;
+  roundRect(ctx, -R - 1 + rec * .3, -R - 3, R * 2 + 2, 6, 2); ctx.fill();
+  roundRect(ctx, -R - 1 + rec * .3, R - 3, R * 2 + 2, 6, 2); ctx.fill();
+  // خطوط الجنزير المتحركة
+  ctx.fillStyle = "rgba(255,255,255,.18)";
+  for (let i = 0; i < 5; i++) {
+    const off = ((t.tread / 7 + i * 6) % 30) - R;
+    ctx.fillRect(off, -R - 3, 2, 6);
+    ctx.fillRect(off, R - 3, 2, 6);
+  }
+
+  // الهيكل
+  ctx.fillStyle = t.color;
+  roundRect(ctx, -R + 1 + rec * .3, -R + 3, R * 2 - 2, R * 2 - 6, 4); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.16)";
+  roundRect(ctx, -R + 3 + rec * .3, -R + 5, R * 2 - 6, 5, 3); ctx.fill();
+
+  // البرج والمدفع
+  ctx.fillStyle = t.dark;
+  ctx.fillRect(2 + rec, -3.2, R + 10, 6.4);
+  ctx.fillStyle = t.color;
+  ctx.beginPath(); ctx.arc(rec * .5, 0, 8.5, 0, 6.3); ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,.35)"; ctx.lineWidth = 2; ctx.stroke();
+
+  // وميض الفوهة
+  if (t.flash > 0) {
+    ctx.save();
+    ctx.globalAlpha = t.flash / 0.09;
+    ctx.fillStyle = "#fff6c9";
+    ctx.beginPath();
+    ctx.moveTo(R + 11, 0); ctx.lineTo(R + 2, -8); ctx.lineTo(R + 2, 8);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  // مؤشر إعادة التلقيم
+  ctx.restore();
+  if (t.cd > 0) {
+    const max = t.ability === "rapid" ? BASE.cooldownRapid : (t.ability === "speed" ? BASE.cooldownFast : BASE.cooldown);
+    const p = 1 - t.cd / max;
+    ctx.save();
+    ctx.globalAlpha = .8;
+    ctx.strokeStyle = "rgba(255,255,255,.75)";
+    ctx.lineWidth = 2.5; ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, R + 6, -Math.PI / 2, -Math.PI / 2 + p * Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function roundRect(c, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r);
+  c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r);
+  c.arcTo(x, y, x + w, y, r);
+  c.closePath();
+}
+
+/* ============ الواجهة العلوية (HUD) ============ */
+function updateHUD() {
+  if (!tanks.length) return;
+  const b = tanks[0], r = tanks[1];
+  $("#barB").style.width = (b.hp / b.maxHp * 100) + "%";
+  $("#barR").style.width = (r.hp / r.maxHp * 100) + "%";
+  $("#hpTxtB").textContent = Math.ceil(b.hp) + " / " + b.maxHp;
+  $("#hpTxtR").textContent = Math.ceil(r.hp) + " / " + r.maxHp;
+  updateTimer();
+}
+function updateTimer() {
+  const el = $("#timer");
+  if (timeLeft === Infinity) { el.textContent = "∞"; el.classList.remove("low"); return; }
+  const s = Math.max(0, Math.ceil(timeLeft));
+  el.textContent = s;
+  el.classList.toggle("low", s <= 10);
+}
+function updateScoreUI() {
+  $("#mScoreB").textContent = score.blue;
+  $("#mScoreR").textContent = score.red;
+  $("#scB").textContent = score.blue;
+  $("#scR").textContent = score.red;
+}
+
+/* ============ (8) التنقّل بين الشاشات ============ */
+const SCREENS = { menu: "#menuScreen", maps: "#mapsScreen", settings: "#settingsScreen", ability: "#abilityScreen", game: "#gameScreen" };
+function show(name) {
+  Object.values(SCREENS).forEach(s => $(s).classList.remove("active"));
+  $(SCREENS[name]).classList.add("active");
+  // محرر التحكم مستقل عن حالة المعركة.
+  settings.controlEdit = 0;
+  $("#gameScreen").classList.remove("control-editing");
+  if (name !== "game") { running = false; $("#resultOverlay").classList.remove("active"); }
+  $("#touchUI").classList.toggle("on", name === "game" && Number(settings.touch) === 1);
+  $("#touchUI").classList.remove("edit-mode");
+  $$("#touchUI .tpad").forEach(x => x.classList.remove("editing"));
+  updateTouchToggleButton();
+  applyPadPositions();
+  if (name === "ability") resetAbilities();
+  if (name === "game") resizeCanvas();
+}
+
+$$("[data-go]").forEach(btn => btn.addEventListener("click", () => {
+  Sound.unlock(); Sound.click();
+  show(btn.dataset.go);
+}));
+
+/* --- بطاقات الخرائط --- */
+function buildMapCards() {
+  const grid = $("#mapsGrid");
+  grid.innerHTML = "";
+  Object.keys(MAPS).forEach(key => {
+    const m = MAPS[key];
+    const card = document.createElement("div");
+    card.className = "map-card" + (key === currentMap ? " selected" : "");
+    card.innerHTML = '<canvas width="240" height="150"></canvas><h3>' + m.name + "</h3><p>" + m.desc + "</p>";
+    card.addEventListener("click", () => {
+      currentMap = key; settings.map = key; saveStore();
+      $$(".map-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+      Sound.click();
+    });
+    grid.appendChild(card);
+    // معاينة مصغّرة
+    const mc = card.querySelector("canvas"), mx = mc.getContext("2d"), sc = 240 / W;
+    mx.fillStyle = "#0c1220"; mx.fillRect(0, 0, 240, 150);
+    mx.strokeStyle = "rgba(255,255,255,.06)";
+    for (let x = 0; x <= 240; x += 20) { mx.beginPath(); mx.moveTo(x, 0); mx.lineTo(x, 150); mx.stroke(); }
+    mx.fillStyle = "#2c3d6b";
+    m.walls.forEach(w => mx.fillRect(w.x * sc, w.y * sc, Math.max(2, w.w * sc), Math.max(2, w.h * sc)));
+    mx.fillStyle = "#3d8bff"; mx.beginPath(); mx.arc(m.spawn[0].x * sc, m.spawn[0].y * sc, 5, 0, 6.3); mx.fill();
+    mx.fillStyle = "#ff4d5e"; mx.beginPath(); mx.arc(m.spawn[1].x * sc, m.spawn[1].y * sc, 5, 0, 6.3); mx.fill();
+  });
+}
+
+/* --- زر إظهار/إخفاء تحكم اللمس أثناء المعركة --- */
+function updateTouchToggleButton(){
+  const btn = $("#toggleTouchBtn");
+  if(!btn) return;
+  const visible = Number(settings.touch) === 1;
+  btn.classList.toggle("on", visible);
+  btn.textContent = visible ? "📱 تحكم اللمس: ظاهر" : "📱 تحكم اللمس: مخفي";
+}
+function toggleTouchControls(){
+  settings.touch = Number(settings.touch) === 1 ? 0 : 1;
+  saveStore();
+  $("#touchUI").classList.toggle("on", settings.touch === 1);
+  updateTouchToggleButton();
+  Sound.unlock(); Sound.click();
+}
+$("#toggleTouchBtn")?.addEventListener("click", toggleTouchControls);
+
+/* --- مجموعات أزرار الإعدادات --- */
+function bindSeg(sel, key, onChange) {
+  const box = $(sel);
+  function paint() {
+    Array.from(box.children).forEach(b =>
+      b.classList.toggle("on", String(settings[key]) === b.dataset.val));
+  }
+  box.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    settings[key] = Number(b.dataset.val);
+    saveStore(); paint(); Sound.click();
+    if (onChange) onChange();
+  });
+  paint();
+}
+bindSeg("#segSound", "sound");
+bindSeg("#segTime", "roundTime");
+bindSeg("#segTouch", "touch", () => {
+  $("#touchUI").classList.toggle("on", $("#gameScreen").classList.contains("active") && settings.touch === 1);
+  updateTouchToggleButton();
+});
+
+function paintAllSettings(){
+  ["segHaptics","segEffects","segShake","segDamageNumbers"].forEach(id=>{
+    const box=$("#"+id); if(!box)return;
+    const key={segHaptics:"haptics",segEffects:"effects",segShake:"screenShake",segDamageNumbers:"damageNumbers"}[id];
+    Array.from(box.children).forEach(b=>b.classList.toggle("on",String(settings[key])===b.dataset.val));
+  });
+  const vr=$("#volumeRange"),vo=$("#volumeVal"); if(vr){vr.value=settings.volume;vo.textContent=settings.volume+"%";}
+  const tr=$("#touchOpacity"),tv=$("#touchOpacityVal"); if(tr){tr.value=settings.touchOpacity;tv.textContent=settings.touchOpacity+"%";}
+}
+["segHaptics","segEffects","segShake","segDamageNumbers"].forEach(id=>{
+  const box=$("#"+id); if(!box)return;
+  const key={segHaptics:"haptics",segEffects:"effects",segShake:"screenShake",segDamageNumbers:"damageNumbers"}[id];
+  box.addEventListener("click",e=>{
+    const b=e.target.closest("button");if(!b)return;
+    settings[key]=Number(b.dataset.val);paintAllSettings();saveStore();Sound.click();
+  });
+});
+$("#volumeRange").addEventListener("input",e=>{settings.volume=Number(e.target.value);paintAllSettings();saveStore();});
+$("#touchOpacity").addEventListener("input",e=>{settings.touchOpacity=Number(e.target.value);paintAllSettings();applyPadPositions();saveStore();});
+paintAllSettings();
+
+$("#resetScore").addEventListener("click", () => {
+  score = { blue: 0, red: 0 }; saveStore(); updateScoreUI(); Sound.click();
+});
+
+/* --- القدرات العشوائية --- */
+$("#revealBtn").addEventListener("click", revealAbilities);
+$("#toBattle").addEventListener("click", () => { Sound.click(); startRound(true); });
+
+/* --- أزرار النتيجة --- */
+$("#btnNewRound").addEventListener("click", () => { Sound.click(); show("ability"); });
+$("#btnRematch").addEventListener("click", () => { Sound.click(); startRound(false); });
+
+
+/* --- محرر التحكم الاحترافي --- */
+const DEFAULT_KEYS = {
+  b: { up:"ArrowUp", down:"ArrowDown", left:"ArrowLeft", right:"ArrowRight", fire:"Space" },
+  r: { up:"KeyW", down:"KeyS", left:"KeyA", right:"KeyD", fire:"KeyF" }
+};
+
+function keyLabel(code) {
+  const labels = {Space:"مسافة",ArrowUp:"↑",ArrowDown:"↓",ArrowLeft:"←",ArrowRight:"→",Enter:"Enter",ShiftLeft:"Shift",ShiftRight:"Shift",ControlLeft:"Ctrl",ControlRight:"Ctrl",AltLeft:"Alt",AltRight:"Alt",Escape:"Esc",Tab:"Tab"};
+  return labels[code] || (code.startsWith("Key") ? code.slice(3) : code.startsWith("Digit") ? code.slice(5) : code);
+}
+function deepClone(v){ return JSON.parse(JSON.stringify(v)); }
+
+function sameKeyUsed(code, exceptPath) {
+  for (const player of ["b","r"]) for (const action of ["up","down","left","right","fire"]) {
+    const path = player + "." + action;
+    if (path !== exceptPath && settings.keys[player][action] === code) return true;
+  }
+  return false;
+}
+function renderKeyButtons() {
+  $$("#controlModal [data-bind]").forEach(btn => {
+    const [player, action] = btn.dataset.bind.split(".");
+    btn.textContent = keyLabel(settings.keys[player][action]);
+  });
+  const status=$("#keyStatus"); if(status) status.textContent="اختر أي مفتاح لتغييره";
+}
+function applyPadPositions() {
+  const positions = settings.touchPositions || DEFAULTS.touchPositions;
+  const place=(el,pos,stage)=>{
+    if(!el || !pos || !stage)return;
+    const r=stage.getBoundingClientRect();
+    const x=pos.left!=null ? pos.left/100*r.width : (100-(pos.right??0)-((el.offsetWidth/r.width)*100));
+    const y=pos.top!=null ? pos.top/100*r.height : (100-(pos.bottom??0)-((el.offsetHeight/r.height)*100));
+    el.style.left=clamp(x,0,Math.max(0,r.width-el.offsetWidth))+"px";
+    el.style.top=clamp(y,0,Math.max(0,r.height-el.offsetHeight))+"px";
+    el.style.right="auto"; el.style.bottom="auto";
+  };
+  const stage=$("#touchEditorStage");
+  if(stage){
+    place($("#editJoyB"),positions.bjoy,stage); place($("#editFireB"),positions.bfire,stage);
+    place($("#editJoyR"),positions.rjoy,stage); place($("#editFireR"),positions.rfire,stage);
+  }
+  const ui=$("#touchUI");
+  if(ui){
+    const map=[["#joyB",positions.bjoy],["#fireB",positions.bfire],["#joyR",positions.rjoy],["#fireR",positions.rfire]];
+    map.forEach(([sel,pos])=>{
+      const el=$(sel); if(!el || !pos)return;
+      if(pos.left!=null){el.style.left=pos.left+"%";el.style.right="auto";} else {el.style.right=(pos.right??7)+"%";el.style.left="auto";}
+      if(pos.top!=null){el.style.top=pos.top+"%";el.style.bottom="auto";} else {el.style.bottom=(pos.bottom??10)+"%";el.style.top="auto";}
+      el.style.opacity=settings.touchOpacity/100;
+    });
+  }
+}
+function openControlModal(){
+  renderKeyButtons(); applyPadPositions();
+  $("#controlModal").classList.add("open");
+  $("#controlModal").setAttribute("aria-hidden","false");
+  listeningButton=null;
+}
+function closeControlModal(){
+  if(listeningButton){listeningButton.classList.remove("listening");listeningButton=null;}
+  saveStore(); applyTouchKeys(); applyPadPositions();
+  $("#controlModal").classList.remove("open");
+  $("#controlModal").setAttribute("aria-hidden","true");
+}
+$("#editControlsBtn").addEventListener("click",()=>{Sound.unlock();Sound.click();openControlModal();});
+
+$$("#controlModal [data-ctab]").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    $$("#controlModal [data-ctab]").forEach(x=>x.classList.toggle("active",x===tab));
+    $$("#controlModal .control-pane").forEach(x=>x.classList.toggle("active",x.id==="controlPane"+(tab.dataset.ctab==="keys"?"Keys":"Touch")));
+    applyPadPositions();
+  });
+});
+
+let listeningButton=null;
+$$("#controlModal [data-bind]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    if(listeningButton) listeningButton.classList.remove("listening");
+    listeningButton=btn; btn.classList.add("listening");
+    btn.textContent="اضغط مفتاحًا…";
+    const st=$("#keyStatus"); if(st) st.textContent="بانتظار مفتاح جديد… اضغط Esc للإلغاء";
+  });
+});
+
+window.addEventListener("keydown",e=>{
+  if(listeningButton){
+    e.preventDefault(); e.stopImmediatePropagation();
+    if(e.code==="Escape"){
+      listeningButton.classList.remove("listening"); listeningButton=null; renderKeyButtons(); return;
+    }
+    const path=listeningButton.dataset.bind, code=e.code;
+    if(sameKeyUsed(code,path)){
+      const st=$("#keyStatus"); if(st) st.textContent="⚠️ هذا المفتاح مستخدم بالفعل من حركة أخرى";
+      return;
+    }
+    const [player,action]=path.split(".");
+    settings.keys[player][action]=code;
+    listeningButton=null; renderKeyButtons(); applyTouchKeys(); saveStore();
+    const st=$("#keyStatus"); if(st) st.textContent="✅ تم حفظ "+keyLabel(code);
+    Sound.click(); return;
+  }
+},{capture:true});
+
+$("#closeControlModal").addEventListener("click",()=>{Sound.click();closeControlModal();});
+$("#controlModal").addEventListener("click",e=>{if(e.target.id==="controlModal")closeControlModal();});
+$("#saveControlModal").addEventListener("click",()=>{Sound.click();closeControlModal();});
+$("#resetControls").addEventListener("click",()=>{
+  settings.keys=deepClone(DEFAULT_KEYS); renderKeyButtons(); applyTouchKeys(); saveStore();
+  const st=$("#keyStatus"); if(st) st.textContent="↩️ تمت إعادة مفاتيح الكمبيوتر للوضع الافتراضي";
+  Sound.click();
+});
+$("#resetTouchPositions").addEventListener("click",()=>{
+  settings.touchPositions=deepClone(DEFAULTS.touchPositions); applyPadPositions(); saveStore(); Sound.click();
+});
+$("#resetAllSettings").addEventListener("click",()=>{
+  if(!confirm("إعادة جميع الإعدادات للوضع الافتراضي؟")) return;
+  const keepMap=settings.map;
+  Object.keys(settings).forEach(k=>delete settings[k]);
+  Object.assign(settings,deepClone(DEFAULTS)); settings.map=keepMap; settings.touch=0;
+  renderKeyButtons(); applyTouchKeys(); applyPadPositions(); paintAllSettings(); updateTouchToggleButton(); saveStore(); Sound.click();
+});
+
+function setupEditorDrag(el,key){
+  if(!el)return;
+  let drag=null;
+  el.addEventListener("pointerdown",e=>{
+    e.preventDefault(); const st=$("#touchEditorStage").getBoundingClientRect(), r=el.getBoundingClientRect();
+    drag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top,w:r.width,h:r.height,sw:st.width,sh:st.height};
+    el.setPointerCapture?.(e.pointerId);
+  });
+  el.addEventListener("pointermove",e=>{
+    if(!drag||e.pointerId!==drag.id)return;
+    const st=$("#touchEditorStage").getBoundingClientRect();
+    const x=clamp(e.clientX-st.left-drag.dx,0,st.width-drag.w);
+    const y=clamp(e.clientY-st.top-drag.dy,0,st.height-drag.h);
+    el.style.left=x+"px";el.style.top=y+"px";el.style.right="auto";el.style.bottom="auto";
+    settings.touchPositions[key]={left:(x/st.width)*100,top:(y/st.height)*100,right:null,bottom:null};
+  });
+  const end=()=>{if(drag){drag=null;saveStore();}};
+  el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
+}
+setupEditorDrag($("#editJoyB"),"bjoy"); setupEditorDrag($("#editFireB"),"bfire");
+setupEditorDrag($("#editJoyR"),"rjoy"); setupEditorDrag($("#editFireR"),"rfire");
+applyPadPositions();
+updateTouchToggleButton();
+
+/* --- لوحة المفاتيح --- */
+const BLOCK = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"];
+window.addEventListener("keydown", e => {
+  const configured = Object.values(settings.keys).flatMap(p => Object.values(p));
+  if (BLOCK.includes(e.code) || configured.includes(e.code)) e.preventDefault();
+  keys[e.code] = true;
+  if (e.code === "Escape" && $("#gameScreen").classList.contains("active")) show("menu");
+}, { passive: false });
+window.addEventListener("keyup", e => { keys[e.code] = false; });
+window.addEventListener("blur", () => { for (const k in keys) keys[k] = false; });
+
+/* --- تحكم اللمس: عصا أنالوج + زر إطلاق مستقل --- */
+const touchAnalog={b:{x:0,y:0},r:{x:0,y:0}};
+function applyTouchKeys(){ /* مفاتيح الكمبيوتر تبقى قابلة للتخصيص؛ اللمس لا يعتمد على شكل الأزرار القديم */ }
+function setTouchKey(code,value){ if(code) keys[code]=value; }
+function setupTouchJoystick(el,player){
+  if(!el)return;
+  const stick=el.querySelector(".joy-stick");
+  let active=false;
+  const reset=()=>{
+    active=false; touchAnalog[player].x=0; touchAnalog[player].y=0;
+    stick.style.transform="translate(0,0)"; el.classList.remove("active");
+    for(const c of [settings.keys[player].up,settings.keys[player].down,settings.keys[player].left,settings.keys[player].right]) setTouchKey(c,false);
+  };
+  const move=e=>{
+    if(!active)return; e.preventDefault();
+    const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+    const max=r.width*0.31, dx=e.clientX-cx, dy=e.clientY-cy, len=Math.hypot(dx,dy)||1;
+    const scale=Math.min(1,max/len), x=(dx*scale)/max, y=(dy*scale)/max;
+    touchAnalog[player].x=x; touchAnalog[player].y=y;
+    stick.style.transform=`translate(${x*max}px,${y*max}px)`;
+    const dead=.16;
+    setTouchKey(settings.keys[player].left,x < -dead); setTouchKey(settings.keys[player].right,x > dead);
+    setTouchKey(settings.keys[player].up,y < -dead); setTouchKey(settings.keys[player].down,y > dead);
+  };
+  el.addEventListener("pointerdown",e=>{
+    e.preventDefault(); Sound.unlock(); active=true; el.classList.add("active"); el.setPointerCapture?.(e.pointerId); move(e);
+    if(settings.haptics && navigator.vibrate) navigator.vibrate(6);
+  });
+  el.addEventListener("pointermove",move);
+  el.addEventListener("pointerup",e=>{e.preventDefault();reset();});
+  el.addEventListener("pointercancel",reset);
+  el.addEventListener("lostpointercapture",reset);
+}
+function setupTouchFire(el,player){
+  if(!el)return;
+  const down=e=>{e.preventDefault();Sound.unlock();setTouchKey(settings.keys[player].fire,true);el.classList.add("act");el.setPointerCapture?.(e.pointerId);if(settings.haptics&&navigator.vibrate)navigator.vibrate(8);};
+  const up=e=>{e.preventDefault();setTouchKey(settings.keys[player].fire,false);el.classList.remove("act");};
+  el.addEventListener("pointerdown",down);el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);el.addEventListener("lostpointercapture",up);
+}
+setupTouchJoystick($("#joyB"),"b"); setupTouchJoystick($("#joyR"),"r");
+setupTouchFire($("#fireB"),"b"); setupTouchFire($("#fireR"),"r");
+applyTouchKeys();
+
+/* --- تحجيم الكانفاس ليملأ المساحة دون تشويه --- */
+function resizeCanvas() {
+  const wrap = cv.parentElement;
+  const availW = wrap.clientWidth - 16;
+  const availH = wrap.clientHeight - 100;
+  const scale = Math.min(availW / W, availH / H, 1.25);
+  cv.style.width  = Math.floor(W * scale) + "px";
+  cv.style.height = Math.floor(H * scale) + "px";
+}
+window.addEventListener("resize", () => {
+  if ($("#gameScreen").classList.contains("active")) resizeCanvas();
+});
+
+/* --- الإقلاع --- */
+buildMapCards();
+updateScoreUI();
+resetAbilities();
+show("menu");
+</script>
+</body>
+</html>
